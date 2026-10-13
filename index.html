@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Test de Orientación Vocacional</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#1b1f2a;--mu:#667085;--ac:#2f6fed;--ac2:#e8effd;--bd:#dfe3ec;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12141a;--card:#1c1f28;--tx:#eef0f6;--mu:#9aa3b5;--ac:#6b9bff;--ac2:#232b40;--bd:#2c3140}}
+:root[data-theme="dark"]{--bg:#12141a;--card:#1c1f28;--tx:#eef0f6;--mu:#9aa3b5;--ac:#6b9bff;--ac2:#232b40;--bd:#2c3140}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.45}
+main{max-width:520px;margin:0 auto;padding:18px 16px 40px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:20px}
+h1{font-size:1.4rem;margin:0 0 6px}h2{font-size:1.15rem;margin:0 0 10px}p{margin:0 0 12px;color:var(--mu)}
+label{display:block;font-size:.9rem;margin:12px 0 4px}
+input{width:100%;padding:12px;font-size:1rem;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx)}
+button{font:inherit;cursor:pointer}
+.btn{display:block;width:100%;padding:14px;margin-top:14px;border:0;border-radius:12px;background:var(--ac);color:#fff;font-weight:600;text-align:center;text-decoration:none}
+.btn.sec{background:var(--ac2);color:var(--ac)}
+.opt{display:block;width:100%;text-align:left;padding:14px;margin-top:10px;border:1px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--tx)}
+.opt:active{border-color:var(--ac);background:var(--ac2)}
+.bar{height:8px;background:var(--ac2);border-radius:8px;overflow:hidden;margin-bottom:16px}.bar i{display:block;height:100%;background:var(--ac);width:0;transition:width .25s}
+.q{font-size:1.15rem;font-weight:600;margin:6px 0 4px}.cnt{font-size:.85rem;color:var(--mu)}
+.row{margin:10px 0}.row span{display:flex;justify-content:space-between;font-size:.9rem}.row div{height:8px;background:var(--ac2);border-radius:8px;overflow:hidden;margin-top:3px}.row b{display:block;height:100%;background:var(--ac)}
+ul{margin:6px 0 12px;padding-left:20px}.err{color:#d92d20;font-size:.85rem;min-height:1.2em}
+.hide{display:none}
+</style></head><body><main>
+<div id="s1" class="card">
+<h1>🎯 Test de Orientación Vocacional</h1>
+<p>Responde con sinceridad (24 preguntas, ~5 min). No hay respuestas buenas ni malas. Al final verás las carreras que mejor van contigo.</p>
+<label for="n">Nombres y apellidos</label><input id="n" autocomplete="name">
+<label for="t">Número de celular</label><input id="t" type="tel" inputmode="tel" autocomplete="tel" placeholder="09XXXXXXXX">
+<label for="c">Curso / colegio (opcional)</label><input id="c">
+<div class="err" id="e"></div>
+<button class="btn" id="go">Comenzar</button>
+</div>
+<div id="s2" class="card hide">
+<div class="bar"><i id="pb"></i></div>
+<div class="cnt" id="cn"></div><div class="q" id="qt"></div>
+<button class="opt" data-v="2">😍 Me gusta mucho</button>
+<button class="opt" data-v="1">🙂 Me da igual</button>
+<button class="opt" data-v="0">🙁 No me gusta</button>
+</div>
+<div id="s3" class="hide"></div>
+</main>
+<script>
+// Número de WhatsApp del profesor (formato internacional sin +, ej: 593987654321). También se puede pasar en el enlace: ?t=593987654321
+const PROFE = "593996101094";
+const T={R:["Realista","Prácticos, técnicos, de acción y campo",["Ingeniería Civil, Mecánica o Eléctrica","Agronomía / Ingeniería Agropecuaria","Mecánica Automotriz y Electromecánica","Medicina Veterinaria","Tecnologías técnico-superiores (construcción, industria)"]],
+I:["Investigador","Analíticos, curiosos, científicos",["Medicina u Odontología","Bioquímica y Farmacia / Biotecnología","Ingeniería en Software / Sistemas","Física, Matemáticas o Ingeniería Química","Ingeniería Ambiental"]],
+A:["Artístico","Creativos, expresivos, originales",["Arquitectura","Diseño Gráfico / Diseño de Interiores","Comunicación, Periodismo o Producción Audiovisual","Artes, Música o Teatro","Marketing Digital y Contenidos"]],
+S:["Social","Empáticos, orientados a ayudar y enseñar",["Educación (Inicial, Básica, Matemáticas, Ciencias)","Psicología","Enfermería","Trabajo Social","Terapia Física / Fisioterapia"]],
+E:["Emprendedor","Líderes, persuasivos, con visión de negocio",["Administración de Empresas","Derecho","Comercio Exterior / Negocios Internacionales","Turismo y Hotelería","Marketing y Ventas"]],
+C:["Convencional","Ordenados, precisos, organizados",["Contabilidad y Auditoría","Economía / Finanzas","Administración Pública","Tributación y Gestión Documental","Logística y Gestión Empresarial"]]};
+const Q=[["R","Reparar motos, autos o aparatos"],["I","Investigar por qué ocurren los fenómenos de la naturaleza"],["A","Dibujar, diseñar o pintar"],["S","Ayudar a personas con problemas personales"],["E","Liderar un grupo o un proyecto"],["C","Llevar cuentas y ordenar datos en hojas de cálculo"],
+["R","Trabajar al aire libre con plantas o animales"],["I","Resolver problemas de matemáticas o lógica"],["A","Escribir historias, canciones o poemas"],["S","Enseñar o explicar cosas a tus compañeros"],["E","Vender productos o convencer a otros"],["C","Organizar documentos y archivos con precisión"],
+["R","Construir o armar cosas con tus manos"],["I","Hacer experimentos de laboratorio"],["A","Actuar, bailar o tocar un instrumento"],["S","Cuidar a enfermos o personas mayores"],["E","Crear tu propio negocio"],["C","Planificar presupuestos y controlar gastos"],
+["R","Manejar herramientas o maquinaria"],["I","Programar o crear aplicaciones y juegos"],["A","Crear videos, fotos o diseños para redes"],["S","Ser voluntario en tu comunidad"],["E","Debatir y defender tus ideas ante un público"],["C","Seguir procedimientos paso a paso con orden"]];
+const $=id=>document.getElementById(id);let i=0,sc={R:0,I:0,A:0,S:0,E:0,C:0},who={};
+$("go").onclick=()=>{const n=$("n").value.trim(),t=$("t").value.replace(/\D/g,"");
+if(n.split(/\s+/).length<2){$("e").textContent="Escribe tu nombre y apellido.";return}
+if(t.length<9||t.length>13){$("e").textContent="Escribe un número de celular válido.";return}
+who={n,t,c:$("c").value.trim()};$("s1").classList.add("hide");$("s2").classList.remove("hide");show()};
+function show(){$("pb").style.width=(i/Q.length*100)+"%";$("cn").textContent="Pregunta "+(i+1)+" de "+Q.length;$("qt").textContent="¿Te gustaría "+Q[i][1].charAt(0).toLowerCase()+Q[i][1].slice(1)+"?"}
+document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{sc[Q[i][0]]+=+b.dataset.v;i++;i<Q.length?show():end()});
+function end(){$("s2").classList.add("hide");
+const r=Object.keys(sc).sort((a,b)=>sc[b]-sc[a]),p=k=>Math.round(sc[k]/8*100),a=r[0],b=r[1];
+const msg="TEST VOCACIONAL\nNombre: "+who.n+"\nCelular: "+who.t+(who.c?"\nCurso: "+who.c:"")+"\nPerfil: "+T[a][0]+" ("+p(a)+"%) + "+T[b][0]+" ("+p(b)+"%)\nCarreras: "+T[a][2].slice(0,3).join(", ")+"\nRegistro: "+[who.n,who.t,who.c,T[a][0],T[b][0],r.map(k=>k+p(k)).join("/")].join(";");
+const prm=new URLSearchParams(location.search).get("t")||PROFE,tel=(prm||"").replace(/\D/g,"");
+const wa="https://wa.me/"+tel+"?text="+encodeURIComponent(msg);
+let h='<div class="card"><h1>¡Listo, '+'<span id="nm"></span>!</h1><p>Tu perfil principal es:</p><h2>'+T[a][0]+" + "+T[b][0]+'</h2><p>'+T[a][1]+'.</p><b>Carreras más afines para ti:</b><ul>'+T[a][2].map(x=>"<li>"+x+"</li>").join("")+'</ul><b>También podrían gustarte ('+T[b][0]+'):</b><ul>'+T[b][2].slice(0,3).map(x=>"<li>"+x+"</li>").join("")+'</ul></div><div class="card" style="margin-top:12px"><b>Tus puntajes</b>'+r.map(k=>'<div class="row"><span>'+T[k][0]+'<span>'+p(k)+'%</span></span><div><b style="width:'+p(k)+'%"></b></div></div>').join("")+'<p style="margin-top:12px;font-size:.85rem">Este test es una guía, no una sentencia: conversa tus resultados con tu orientador.</p>'+
+'<a class="btn" target="_blank" rel="noopener" href="'+wa+'">📲 Enviar mi resultado a mi profesor</a><button class="btn sec" id="cp">Copiar mi resultado</button></div>';
+$("s3").innerHTML=h;$("s3").classList.remove("hide");$("nm").textContent=who.n.split(" ")[0];
+$("cp").onclick=async()=>{try{await navigator.clipboard.writeText(msg);$("cp").textContent="¡Copiado!"}catch(e){$("cp").textContent="No se pudo copiar"}}}
+</script></body></html>
